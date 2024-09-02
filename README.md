@@ -1,2 +1,2 @@
 # blockmap
-Convert an image to Unicode block elements with ANSI colors
+Convert an image to Unicode block elements with ANSI colors.
