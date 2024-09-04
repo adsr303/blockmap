@@ -8,6 +8,7 @@ import (
 )
 
 func ConvertImageToTerminal(img image.Image) string {
+	color.NoColor = false
 	var builder strings.Builder
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
