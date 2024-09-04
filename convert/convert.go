@@ -32,6 +32,14 @@ var colors = []color.Attribute{
 	color.FgMagenta,
 	color.FgCyan,
 	color.FgWhite,
+	color.FgHiBlack,
+	color.FgHiRed,
+	color.FgHiGreen,
+	color.FgHiYellow,
+	color.FgHiBlue,
+	color.FgHiMagenta,
+	color.FgHiCyan,
+	color.FgHiWhite,
 }
 
 const alphaRange = 0xffff/5 + 1
@@ -47,6 +55,9 @@ func getColorIndex(r, g, b uint32) int {
 	}
 	if b > halfBright {
 		result |= 0x4
+	}
+	if (r+g+b)/3 > 0xbfff {
+		result += 8
 	}
 	return result
 }

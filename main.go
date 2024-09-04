@@ -22,14 +22,22 @@ func main() {
 		os.Exit(2)
 	}
 	imgfile := flag.Arg(0)
+	img, err := readImage(imgfile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Print(convert.ConvertImageToTerminal(img))
+}
+
+func readImage(imgfile string) (image.Image, error) {
 	b, err := os.ReadFile(imgfile)
 	if err != nil {
-		log.Fatalf("reading %s: %v", imgfile, err)
+		return nil, fmt.Errorf("reading %s: %w", imgfile, err)
 	}
 	r := bytes.NewReader(b)
 	img, _, err := image.Decode(r)
 	if err != nil {
-		log.Fatalf("reading %s: %v", imgfile, err)
+		return nil, fmt.Errorf("reading %s: %w", imgfile, err)
 	}
-	fmt.Print(convert.ConvertImageToTerminal(img))
+	return img, nil
 }
