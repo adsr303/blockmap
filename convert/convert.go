@@ -11,19 +11,25 @@ func ConvertImageToTerminal(img image.Image) string {
 	color.NoColor = false
 	var builder strings.Builder
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
+		var prev *color.Color
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
 			r, g, b, a := img.At(x, y).RGBA()
 			c := getColorIndex(r, g, b)
-			co := color.Set(colors[c]) // TODO Use Set/UnsetWriter
+			co := color.Set(colors[c])
+			if !co.Equals(prev) {
+				co.SetWriter(&builder)
+			}
 			block := blocks[a/alphaRange]
-			co.Fprint(&builder, block, block)
+			builder.WriteString(block)
+			prev = co
 		}
+		prev.UnsetWriter(&builder)
 		builder.WriteRune('\n')
 	}
 	return builder.String()
 }
 
-var blocks = []string{" ", "░", "▒", "▓", "█"}
+var blocks = []string{"  ", "░░", "▒▒", "▓▓", "██"}
 var colors = []color.Attribute{
 	color.FgBlack,
 	color.FgRed,
