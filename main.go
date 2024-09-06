@@ -16,6 +16,8 @@ import (
 )
 
 func main() {
+	var useShadeBlocks bool
+	flag.BoolVar(&useShadeBlocks, "shade", false, "use double-size shade block characters for alpha")
 	flag.Parse()
 	if flag.NArg() == 0 {
 		flag.Usage()
@@ -26,7 +28,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Print(convert.ConvertImageToTerminal(img))
+	if useShadeBlocks {
+		fmt.Print(convert.ConvertImageToShadeBlocks(img))
+	} else {
+		fmt.Print(convert.ConvertImageToHalfBlocks(img))
+	}
 }
 
 func readImage(imgfile string) (image.Image, error) {
