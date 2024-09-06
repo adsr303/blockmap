@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestGetOpaqueIndex(t *testing.T) {
+func TestGetOpaqueColorIndex(t *testing.T) {
 	index := getOpaqueColorIndex(palette256, color.White)
 	if index != 15 {
 		t.Errorf("expected index 15, got %d", index)
