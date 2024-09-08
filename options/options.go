@@ -20,28 +20,22 @@ type Options struct {
 
 var ErrInvalidFitFormat = errors.New("fit format")
 
-var fitAuto = regexp.MustCompile(`^auto(-\d+)?$`)
+var fitAuto = regexp.MustCompile(`^auto-(\d+)$`)
 var fitSize = regexp.MustCompile(`^(\d+)x(\d+)$`)
 
 // parseFit finds the desired maximum dimensions of the output that the user
 // wants to generate based on command-line argument and terminal size.
 func parseFit(fit string, term terminal.Terminfo) (int, int, error) {
-	if fit == "" {
+	if fit == "" || fit == "auto" {
 		return term.Columns, term.Lines, nil
 	}
 	m := fitAuto.FindStringSubmatch(fit)
-	switch len(m) {
-	case 1:
-		return term.Columns, term.Lines, nil
-	case 2:
-		if m[1] == "" {
-			return term.Columns, term.Lines, nil
-		}
+	if len(m) == 2 {
 		minusLines, err := strconv.Atoi(m[1])
 		if err != nil {
 			return 0, 0, unexpectedError(err)
 		}
-		return term.Columns, term.Lines + minusLines, nil
+		return term.Columns, term.Lines - minusLines, nil
 	}
 	m = fitSize.FindStringSubmatch(fit)
 	if len(m) == 3 {
