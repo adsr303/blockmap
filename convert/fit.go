@@ -12,7 +12,7 @@ func calculateFit(bounds image.Rectangle, columns, lines int) (int, int, error) 
 		return 0, 0, fmt.Errorf("invalid terminal size: %dx%x", columns, lines)
 	}
 	if dx <= 0 || dy <= 0 {
-		return 0, 0, fmt.Errorf("invalid image bounts: %v", bounds)
+		return 0, 0, fmt.Errorf("invalid image bounds: %v", bounds)
 	}
 	if columns >= dx && lines >= dy { // TODO Rethink condition - terminfo automargin etc.
 		return dx, dy, nil
