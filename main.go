@@ -12,12 +12,15 @@ import (
 	"os"
 
 	"github.com/adsr303/blockmap/convert"
+	"github.com/adsr303/blockmap/options"
+	"github.com/adsr303/blockmap/terminal"
 	_ "golang.org/x/image/bmp"
 )
 
 func main() {
-	var useShadeBlocks bool
-	flag.BoolVar(&useShadeBlocks, "shade", false, "use double-size shade block characters for alpha")
+	var opts options.Options
+	flag.BoolVar(&opts.UseShadeBlocks, "shade", false, "use double-size shade block characters for alpha")
+	flag.StringVar(&opts.Fit, "fit", "none", "fit image within specified size; one of:\nnone, auto, auto-LINES, COLUMNSxLINES")
 	flag.Parse()
 	if flag.NArg() == 0 {
 		flag.Usage()
@@ -28,7 +31,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if useShadeBlocks {
+	term := terminal.GetTerminfo()
+	rect, err := opts.GetFitRect(term)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if rect.Dx() < img.Bounds().Dx() || rect.Dy() < img.Bounds().Dy() {
+		img, err = convert.ResizeImage(img, rect)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	if opts.UseShadeBlocks {
 		fmt.Print(convert.ConvertImageToShadeBlocks(img))
 	} else {
 		fmt.Print(convert.ConvertImageToHalfBlocks(img))

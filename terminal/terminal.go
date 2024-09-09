@@ -2,8 +2,9 @@ package terminal
 
 import (
 	"os"
-	"strconv"
 	"strings"
+
+	"golang.org/x/term"
 )
 
 type Colors int
@@ -21,8 +22,12 @@ type Terminfo struct {
 }
 
 func GetTerminfo() Terminfo {
-	columns := getNumEnv("COLUMNS")
-	lines := getNumEnv("LINES")
+	columns, lines, err := term.GetSize(int(os.Stdin.Fd()))
+	if err != nil {
+		// TODO For now assuming dumb terminals, might return error later
+		columns = 80
+		lines = 24
+	}
 	var colors Colors
 	term := os.Getenv("TERM")
 	switch {
@@ -37,16 +42,4 @@ func GetTerminfo() Terminfo {
 		colors = Colors8bit
 	}
 	return Terminfo{Columns: columns, Lines: lines, Colors: colors}
-}
-
-func getNumEnv(name string) int {
-	s := os.Getenv(name)
-	if s == "" {
-		return 0
-	}
-	result, err := strconv.Atoi(s)
-	if err != nil {
-		return 0
-	}
-	return result
 }

@@ -1,6 +1,7 @@
 package options
 
 import (
+	"math"
 	"testing"
 
 	"github.com/adsr303/blockmap/terminal"
@@ -12,15 +13,16 @@ func TestParseFit(t *testing.T) {
 		columns, lines int
 		wantError      bool
 	}{
-		{"", 80, 25, false},
-		{"auto", 80, 25, false},
-		{"auto-2", 80, 23, false},
+		{"", math.MaxInt, math.MaxInt, false},
+		{"none", math.MaxInt, math.MaxInt, false},
+		{"auto", 80, 24, false},
+		{"auto-2", 80, 22, false},
 		{"32x32", 32, 32, false},
 		{"32", 0, 0, true},
 		{"32-2", 0, 0, true},
 		{"garbage", 0, 0, true},
 	}
-	term := terminal.Terminfo{Columns: 80, Lines: 25, Colors: terminal.Colors8bit}
+	term := terminal.Terminfo{Columns: 80, Lines: 24, Colors: terminal.Colors8bit}
 	for _, c := range cases {
 		t.Run(c.value, func(t *testing.T) {
 			columns, lines, err := parseFit(c.value, term)
