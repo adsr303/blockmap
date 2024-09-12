@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"image"
-	"math"
 	"regexp"
 	"strconv"
 
@@ -39,12 +38,14 @@ var ErrInvalidFitFormat = errors.New("fit format")
 var fitAuto = regexp.MustCompile(`^auto-(\d+)$`)
 var fitSize = regexp.MustCompile(`^(\d+)x(\d+)$`)
 
+const bigSize = 1 << 12
+
 // parseFit finds the desired maximum dimensions of the output that the user
 // wants to generate based on command-line argument and terminal size.
 func parseFit(fit string, term terminal.Terminfo) (int, int, error) {
 	switch fit {
 	case "", "none":
-		return math.MaxInt, math.MaxInt, nil
+		return bigSize, bigSize, nil
 	case "auto":
 		return term.Columns, term.Lines, nil
 	}
