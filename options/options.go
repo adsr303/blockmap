@@ -16,7 +16,7 @@ type Options struct {
 	Fit string
 	// `[ansi|bash|echo|sh]`
 	Format string
-	// `[auto|8|16|256]`
+	// `[auto|8|8hi|16|256|millions]`
 	Colors string
 }
 

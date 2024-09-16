@@ -1,8 +1,52 @@
 package convert
 
 import (
+	"fmt"
 	"image/color"
 )
+
+type ANSIPalette interface {
+	ColorIndex(c color.Color) int
+	ForegroundCode(index int) string
+	BackgroundCode(index int) string
+}
+
+// type ansi8 struct{}
+// type ansi8hi struct{}
+// type ansi16 struct{}
+type ansi256 struct{}
+
+func (a ansi256) ColorIndex(c color.Color) int {
+	return getOpaqueColorIndex(palette256, c)
+}
+func (a ansi256) ForegroundCode(index int) string {
+	return fmt.Sprintf("38;5;%d", index)
+}
+func (a ansi256) BackgroundCode(index int) string {
+	return fmt.Sprintf("48;5;%d", index)
+}
+
+type ansi24bit struct{}
+
+func (a ansi24bit) ColorIndex(c color.Color) int {
+	r, g, b, _ := c.RGBA()
+	return int((r & 0xff00 << 8) | (g & 0xff00) | (b & 0xff00 >> 8))
+}
+func (a ansi24bit) ForegroundCode(index int) string {
+	r, g, b := splitRGB(index)
+	return fmt.Sprintf("38;2;%d;%d;%d", r, g, b)
+}
+func (a ansi24bit) BackgroundCode(index int) string {
+	r, g, b := splitRGB(index)
+	return fmt.Sprintf("48;2;%d;%d;%d", r, g, b)
+}
+
+func splitRGB(index int) (int, int, int) {
+	r := index & 0xff0000 >> 16
+	g := index & 0xff00 >> 8
+	b := index & 0xff
+	return r, g, b
+}
 
 func getOpaqueColorIndex(p color.Palette, c color.Color) int {
 	r, g, b, _ := c.RGBA()
