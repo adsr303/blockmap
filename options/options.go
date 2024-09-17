@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/adsr303/blockmap/convert"
 	"github.com/adsr303/blockmap/terminal"
 )
 
@@ -16,9 +17,14 @@ type Options struct {
 	Fit string
 	// `[ansi|bash|echo|sh]`
 	Format string
-	// `[auto|8|8hi|16|256|millions]`
+	// `[auto|ansi|ansi256|ansirgb]`
 	Colors string
 }
+
+var (
+	ErrInvalidFitFormat = errors.New("fit format")
+	ErrInvalidColors    = errors.New("colors argument")
+)
 
 func (o Options) GetFitRect(term terminal.Terminfo) (image.Rectangle, error) {
 	dx, dy, err := parseFit(o.Fit, term)
@@ -32,8 +38,6 @@ func (o Options) GetFitRect(term terminal.Terminfo) (image.Rectangle, error) {
 	}
 	return image.Rect(0, 0, dx, dy), nil
 }
-
-var ErrInvalidFitFormat = errors.New("fit format")
 
 var fitAuto = regexp.MustCompile(`^auto-(\d+)$`)
 var fitSize = regexp.MustCompile(`^(\d+)x(\d+)$`)
@@ -74,4 +78,28 @@ func parseFit(fit string, term terminal.Terminfo) (int, int, error) {
 
 func unexpectedError(e error) error {
 	return fmt.Errorf("unexpected error: %w", e)
+}
+
+func (o Options) GetPalette(term terminal.Terminfo) (convert.ANSIPalette, error) {
+	switch o.Colors {
+	case "ansi":
+		return convert.ANSI, nil
+	case "ansi256":
+		return convert.ANSI256, nil
+	case "ansirgb":
+		return convert.ANSIRGB, nil
+	case "auto":
+		switch term.Colors {
+		case terminal.Colors3bit:
+			return convert.ANSI, nil
+		case terminal.Colors8bit:
+			return convert.ANSI256, nil
+		case terminal.Colors24bit:
+			return convert.ANSIRGB, nil
+		default:
+			return convert.ANSI, nil
+		}
+	default:
+		return nil, ErrInvalidColors
+	}
 }

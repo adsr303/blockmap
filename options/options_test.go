@@ -1,7 +1,6 @@
 package options
 
 import (
-	"math"
 	"testing"
 
 	"github.com/adsr303/blockmap/terminal"
@@ -13,8 +12,8 @@ func TestParseFit(t *testing.T) {
 		columns, lines int
 		wantError      bool
 	}{
-		{"", math.MaxInt, math.MaxInt, false},
-		{"none", math.MaxInt, math.MaxInt, false},
+		{"", bigSize, bigSize, false},
+		{"none", bigSize, bigSize, false},
 		{"auto", 80, 24, false},
 		{"auto-2", 80, 22, false},
 		{"32x32", 32, 32, false},

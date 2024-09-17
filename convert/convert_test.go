@@ -18,7 +18,7 @@ func TestConvertImageToHalfBlocks(t *testing.T) {
 		{makeRect(3, 5), 3},
 	}
 	for _, c := range cases {
-		s := ConvertImageToHalfBlocks(c.img)
+		s := ConvertImageToHalfBlocks(c.img, ANSI256)
 		if !strings.HasSuffix(s, "\n") {
 			t.Error("expected newline at end")
 		}

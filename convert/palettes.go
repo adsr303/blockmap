@@ -11,32 +11,53 @@ type ANSIPalette interface {
 	BackgroundCode(index int) string
 }
 
-// type ansi8 struct{}
-// type ansi8hi struct{}
-// type ansi16 struct{}
+var (
+	ANSI    = ansi{}
+	ANSI256 = ansi256{}
+	ANSIRGB = ansirgb{}
+)
+
+type ansi struct{}
+
+func (a ansi) ColorIndex(c color.Color) int {
+	return getOpaqueColorIndex(palette8, c)
+}
+
+func (a ansi) ForegroundCode(index int) string {
+	return fmt.Sprintf("%d", index+30)
+}
+
+func (a ansi) BackgroundCode(index int) string {
+	return fmt.Sprintf("%d", index+40)
+}
+
 type ansi256 struct{}
 
 func (a ansi256) ColorIndex(c color.Color) int {
 	return getOpaqueColorIndex(palette256, c)
 }
+
 func (a ansi256) ForegroundCode(index int) string {
 	return fmt.Sprintf("38;5;%d", index)
 }
+
 func (a ansi256) BackgroundCode(index int) string {
 	return fmt.Sprintf("48;5;%d", index)
 }
 
-type ansi24bit struct{}
+type ansirgb struct{}
 
-func (a ansi24bit) ColorIndex(c color.Color) int {
+func (a ansirgb) ColorIndex(c color.Color) int {
 	r, g, b, _ := c.RGBA()
 	return int((r & 0xff00 << 8) | (g & 0xff00) | (b & 0xff00 >> 8))
 }
-func (a ansi24bit) ForegroundCode(index int) string {
+
+func (a ansirgb) ForegroundCode(index int) string {
 	r, g, b := splitRGB(index)
 	return fmt.Sprintf("38;2;%d;%d;%d", r, g, b)
 }
-func (a ansi24bit) BackgroundCode(index int) string {
+
+func (a ansirgb) BackgroundCode(index int) string {
 	r, g, b := splitRGB(index)
 	return fmt.Sprintf("48;2;%d;%d;%d", r, g, b)
 }
@@ -55,7 +76,7 @@ func getOpaqueColorIndex(p color.Palette, c color.Color) int {
 }
 
 // See https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
-var palette16 color.Palette
+var palette8 color.Palette
 
 // See https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
 var palette256 color.Palette
@@ -98,8 +119,7 @@ func init() {
 		palette256 = append(palette256, color.Gray{uint8(0x08 + i*0x0a)})
 	}
 
-	palette16 = palette256[:16]
-	_ = palette16 // TODO
+	palette8 = palette256[:8]
 }
 
 func makeNRGBA(num uint32) color.Color {

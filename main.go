@@ -21,6 +21,7 @@ func main() {
 	var opts options.Options
 	flag.BoolVar(&opts.UseShadeBlocks, "shade", false, "use double-size shade block characters for alpha")
 	flag.StringVar(&opts.Fit, "fit", "none", "fit image within specified size; one of:\nnone, auto, auto-LINES, COLUMNSxLINES")
+	flag.StringVar(&opts.Colors, "colors", "auto", "ANSI color palette to use for rendering; one of:\nauto, ansi, ansi256, ansirgb")
 	flag.Parse()
 	if flag.NArg() == 0 {
 		flag.Usage()
@@ -42,10 +43,14 @@ func main() {
 			log.Fatal(err)
 		}
 	}
+	palette, err := opts.GetPalette(term)
+	if err != nil {
+		log.Fatal(err)
+	}
 	if opts.UseShadeBlocks {
-		fmt.Print(convert.ConvertImageToShadeBlocks(img))
+		fmt.Print(convert.ConvertImageToShadeBlocks(img, palette))
 	} else {
-		fmt.Print(convert.ConvertImageToHalfBlocks(img))
+		fmt.Print(convert.ConvertImageToHalfBlocks(img, palette))
 	}
 }
 

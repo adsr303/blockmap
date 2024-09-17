@@ -6,16 +6,14 @@ import (
 )
 
 func TestAnsi256_ColorIndex(t *testing.T) {
-	var a ansi256
-	index := a.ColorIndex(color.Black)
+	index := ANSI256.ColorIndex(color.Black)
 	if index != 0 {
 		t.Errorf("expected index 0, got %d", index)
 	}
 }
 
-func TestAnsi24bit_ColorIndex(t *testing.T) {
-	var a ansi24bit
-	index := a.ColorIndex(color.White)
+func TestAnsiRGB_ColorIndex(t *testing.T) {
+	index := ANSIRGB.ColorIndex(color.White)
 	if index != 0xffffff {
 		t.Errorf("expected #FFFFFF, got #%06X", index)
 	}
