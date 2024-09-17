@@ -3,6 +3,7 @@ package convert
 import (
 	"fmt"
 	"image/color"
+	"strconv"
 )
 
 type ANSIPalette interface {
@@ -24,11 +25,11 @@ func (a ansi) ColorIndex(c color.Color) int {
 }
 
 func (a ansi) ForegroundCode(index int) string {
-	return fmt.Sprintf("%d", index+30)
+	return strconv.Itoa(index + 30)
 }
 
 func (a ansi) BackgroundCode(index int) string {
-	return fmt.Sprintf("%d", index+40)
+	return strconv.Itoa(index + 40)
 }
 
 type ansi256 struct{}
