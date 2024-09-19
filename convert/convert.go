@@ -3,6 +3,8 @@ package convert
 import (
 	"image"
 	"strings"
+
+	"github.com/adsr303/blockmap/palettes"
 )
 
 const reset = "\x1b[0m"
@@ -11,7 +13,7 @@ var shadeBlocks = []string{"  ", "░░", "▒▒", "▓▓", "██"}
 
 const shadeRange = 0xffff/5 + 1
 
-func ConvertImageToShadeBlocks(img image.Image, pal ANSIPalette) string {
+func ConvertImageToShadeBlocks(img image.Image, pal palettes.ANSIPalette) string {
 	var builder strings.Builder
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		prev := -1
@@ -33,7 +35,7 @@ func ConvertImageToShadeBlocks(img image.Image, pal ANSIPalette) string {
 
 const upperHalfBlock = "▀"
 
-func ConvertImageToHalfBlocks(img image.Image, pal ANSIPalette) string {
+func ConvertImageToHalfBlocks(img image.Image, pal palettes.ANSIPalette) string {
 	var builder strings.Builder
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y += 2 {
 		topPrev := -1

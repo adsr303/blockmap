@@ -1,4 +1,4 @@
-package convert
+package palettes
 
 import (
 	"image/color"

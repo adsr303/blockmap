@@ -5,6 +5,8 @@ import (
 	"image/color"
 	"strings"
 	"testing"
+
+	"github.com/adsr303/blockmap/palettes"
 )
 
 func TestConvertImageToHalfBlocks(t *testing.T) {
@@ -18,7 +20,7 @@ func TestConvertImageToHalfBlocks(t *testing.T) {
 		{makeRect(3, 5), 3},
 	}
 	for _, c := range cases {
-		s := ConvertImageToHalfBlocks(c.img, ANSI256)
+		s := ConvertImageToHalfBlocks(c.img, palettes.ANSI256)
 		if !strings.HasSuffix(s, "\n") {
 			t.Error("expected newline at end")
 		}

@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/adsr303/blockmap/convert"
+	"github.com/adsr303/blockmap/palettes"
 	"github.com/adsr303/blockmap/terminal"
 )
 
@@ -80,24 +80,24 @@ func unexpectedError(e error) error {
 	return fmt.Errorf("unexpected error: %w", e)
 }
 
-func (o Options) GetPalette(term terminal.Terminfo) (convert.ANSIPalette, error) {
+func (o Options) GetPalette(term terminal.Terminfo) (palettes.ANSIPalette, error) {
 	switch o.Colors {
 	case "ansi":
-		return convert.ANSI, nil
+		return palettes.ANSI, nil
 	case "ansi256":
-		return convert.ANSI256, nil
+		return palettes.ANSI256, nil
 	case "ansirgb":
-		return convert.ANSIRGB, nil
+		return palettes.ANSIRGB, nil
 	case "auto":
 		switch term.Colors {
 		case terminal.Colors3bit:
-			return convert.ANSI, nil
+			return palettes.ANSI, nil
 		case terminal.Colors8bit:
-			return convert.ANSI256, nil
+			return palettes.ANSI256, nil
 		case terminal.Colors24bit:
-			return convert.ANSIRGB, nil
+			return palettes.ANSIRGB, nil
 		default:
-			return convert.ANSI, nil
+			return palettes.ANSI, nil
 		}
 	default:
 		return nil, ErrInvalidColors
